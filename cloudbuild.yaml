@@ -9,8 +9,38 @@ steps:
   - --keyring=kube-build
   - --key=kube-config
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'gcr.io/main-194214/f-t.win', '.' ]
-- name: 'ubuntu'
-  args: ['bash', './bin/deploy.sh']
+  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/f-t.win:$BUILD_ID', '.' ]
+- name: 'gcr.io/cloud-builders/docker'
+  args: ["push", "gcr.io/$PROJECT_ID/f-t.win:$BUILD_ID"]
+- name: 'roffe/kubectl'
+  args:
+  - kubectl
+  - apply
+  - --kubeconfig=bin/kubeconfig.yaml
+  - -f
+  - bin/kube/deployment.yaml
+- name: 'roffe/kubectl'
+  args:
+  - kubectl
+  - apply
+  - --kubeconfig=bin/kubeconfig.yaml
+  - -f
+  - bin/kube/ingress.yaml
+- name: 'roffe/kubectl'
+  args:
+  - kubectl
+  - apply
+  - --kubeconfig=bin/kubeconfig.yaml
+  - -f
+  - bin/kube/service.yaml
+- name: 'roffe/kubectl'
+  args:
+  - kubectl
+  - set
+  - --kubeconfig=bin/kubeconfig.yaml
+  - image
+  - deployment
+  - f-t-win-deployment
+  - f-t-win=gcr.io/$PROJECT_ID/f-t.win:$BUILD_ID
 images:
-- 'gcr.io/main-194214/f-t.win'
+- 'gcr.io/$PROJECT_ID/f-t.win:$BUILD_ID'
