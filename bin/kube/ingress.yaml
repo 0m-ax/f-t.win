@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: f-t-win-ingress
+spec:
+  rules:
+  - host: f-t-win.maxc.in
+    http:
+      paths:
+      - backend:
+          serviceName: f-t-win-service
+          servicePort: 80
+  - host: f-t.win
+    http:
+      paths:
+      - backend:
+          serviceName: f-t-win-service
+          servicePort: 80

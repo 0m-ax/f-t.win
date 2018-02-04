@@ -1,0 +1,16 @@
+steps:
+- name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=bin/kubeconfig.yaml.enc
+  - --plaintext-file=bin/kubeconfig.yaml
+  - --location=global
+  - --keyring=kube-build
+  - --key=kube-config
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'gcr.io/main-194214/f-t.win', '.' ]
+- name: 'ubuntu'
+  args: ['bash', './bin/deploy.sh']
+images:
+- 'gcr.io/main-194214/f-t.win'

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: f-t-win-deployment
+  labels:
+    app: f-t-win
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: f-t-win
+  template:
+    metadata:
+      labels:
+        app: f-t-win
+    spec:
+      containers:
+      - name: f-t-win
+        image: gcr.io/main-194214/f-t.win:latest
+        ports:
+        - containerPort: 80
